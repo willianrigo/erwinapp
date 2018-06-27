@@ -1,6 +1,8 @@
 import '../assets/css/App.css';
 import React, { Component } from 'react';
 import ImgUploader from "../components/ImgUploader";
+const electron = window.require('electron')
+const { remote: { app, webContents  } } = electron
 
 class App extends Component {
 
