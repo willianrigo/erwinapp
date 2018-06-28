@@ -8,14 +8,30 @@ class App extends Component {
 
   constructor(){
     super();
+
+    this.handleOnClick = this.handleOnClick.bind(this);
+  }
+
+  handleOnClick(sendChannel, receiveChannel){
+    console.log("HandleOnClick: ", sendChannel, receiveChannel);
+
+    if(sendChannel != 'printers:request' || receiveChannel != 'printers:list')
+    {
+      console.log('ERROR: Invalid channel name.')
+      return;
+    }
+
+    electron.ipcRenderer.send(sendChannel);
+    electron.ipcRenderer.on(receiveChannel, (event, printers) => {
+      console.log("List of the printers: ", printers);
+    });
   }
 
   componentDidMount(){
-    
 
-    // electron.ipcRenderer.on('printer:sendInfo', (event, info) => {
-    //   document.querySelector('#printerInfo').innerHTML = `Printer info: ${info}`;
-    // });
+     electron.ipcRenderer.on('printer:sendInfo', (event, info) => {
+
+     })
   }
 
   componentWillUnmount() {
@@ -45,17 +61,13 @@ getPrinterInfo = (event) => {
           <p>Rendering this by using React!</p>
           <ImgUploader />
 
-          
-
           <button className="apiCaller">Make API Call</button>
-          <button className="printerCaller">Get Printer Info</button>
-          {console.log("electron aqui:",electron)}
+          <button className="printerCaller" onClick={this.handleOnClick('printers:request','printers:list')}>Get Printer Info</button>
           <p id="printerInfo"></p>
-
-            {document.querySelector(".printerCaller").addEventListener('requestPrinterInfo', (event) => {
+            {/* {document.querySelector(".printerCaller").addEventListener('requestPrinterInfo', (event) => {
                 info = electron.ipcRenderer.sendSync('printer:requestInfo');
                 document.querySelector('#printerInfo').innerHTML = `Printer info: ${info}`;
-            })}
+            })} */}
       </div>
     );
   }

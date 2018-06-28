@@ -1,4 +1,6 @@
 'use strict';
+const requestChannel = 'printers:request';
+const listChannel = 'printers:list';
 
 // Import parts of electron to use
 const {app, BrowserWindow, ipcMain} = require('electron');
@@ -71,13 +73,12 @@ function createWindow() {
   });
 }
 
-ipcMain.on('printer:requestInfo', (event) => {
-  console.log('chegou aqui')
-  // mainWindow.webContents.send(
-  //   "printer:sendInfo",
-  //   console.log(mainWindow.webContents.getPrinters())
-  // );
-  event.sender.send('printer:requestInfo', 'pong')
+ipcMain.on(requestChannel, (event) => {
+  mainWindow.webContents.send(
+    listChannel,
+    mainWindow.webContents.getPrinters()
+  );
+  // event.sender.send('printer:requestInfo', 'pong')
 });
 
 // This method will be called when Electron has finished
