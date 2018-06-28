@@ -1,14 +1,16 @@
 'use strict';
 
 // Import parts of electron to use
-const {app, BrowserWindow} = require('electron');
+const {app, BrowserWindow, ipcMain} = require('electron');
 const path = require('path')
 const url = require('url')
 
-const dev = process.env.NODE_ENV
+// const dev = process.env.NODE_ENV
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
 let mainWindow;
+let workerWindow;
+
 
 // Keep a reference for dev mode
 let dev = false;
@@ -16,8 +18,19 @@ if ( process.defaultApp || /[\\/]electron-prebuilt[\\/]/.test(process.execPath) 
   dev = true;
 }
 
+//Create the worker browser window
+// workerWindow = new BrowserWindow();
+//     workerWindow.loadURL("file://" + __dirname + "/worker.html");
+//     // workerWindow.hide();
+//     workerWindow.webContents.openDevTools();
+//     workerWindow.on("closed", () => {
+//         workerWindow = undefined;
+// });
+
+
+
 function createWindow() {
-  // Create the browser window.
+  // Create the main browser window.
   mainWindow = new BrowserWindow({
     width: 1024, height: 768, show: false
   });
@@ -57,6 +70,15 @@ function createWindow() {
     mainWindow = null;
   });
 }
+
+ipcMain.on('printer:requestInfo', (event) => {
+  console.log('chegou aqui')
+  // mainWindow.webContents.send(
+  //   "printer:sendInfo",
+  //   console.log(mainWindow.webContents.getPrinters())
+  // );
+  event.sender.send('printer:requestInfo', 'pong')
+});
 
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
