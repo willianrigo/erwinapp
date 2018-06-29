@@ -76,8 +76,13 @@ function createWindow() {
 ipcMain.on(requestChannel, (event) => {
   mainWindow.webContents.send(
     listChannel,
-    mainWindow.webContents.getPrinters()
+    mainWindow.webContents.print({silent: false},(event) => {
+      console.log('sucesso:', event);
+    })
+    //mainWindow.webContents.getPrinters()
   );
+  
+  
   // event.sender.send('printer:requestInfo', 'pong')
 });
 
